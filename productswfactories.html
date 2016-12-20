@@ -1,0 +1,64 @@
+<html>
+<head>
+  <title></title>
+  <script src='bower_components/angular/angular.js'></script>
+  <script type='text/javascript'>
+
+    var myApp = angular.module('myApp', []);
+    myApp.factory('productFactory', function (){
+        var products = [];
+        var factory = {};
+        factory.getProducts = function (callback){
+            callback(products);
+        }
+        factory.create=function(data,callback){
+          products.push(data);
+          console.log(data)
+          callback(products);
+        }
+        factory.delete=function(index,callback){
+          products.splice(index,1);
+          callback(products);
+        }
+        return factory;
+      });
+
+    myApp.controller('productsController', ['$scope', 'productFactory', function ($scope, productFactory){
+    productFactory.getProducts(function(data){
+      $scope.products =data;
+    })
+    $scope.addProducts = function (){
+
+      productFactory.create($scope.product, function(data){
+        $scope.product = {};
+    })
+    $scope.deleteProducts = function (index){
+      productFactory.delete(index, function(data){
+      });
+    }
+  }
+}]);
+  </script>
+</head>
+<body ng-app='myApp'>
+    <div ng-controller='productsController'>
+    <form>
+      Product Name: <input type='text' ng-model='product.name'>
+      Product Price: <input type='text' ng-model='product.price'>
+      <input type='submit' value='create product' ng-click='addProducts()' >
+    </form>
+        <table>
+          <tr>
+            <th>Product Name</th>
+            <th>Product Price</th>
+            <th>Actions</th>
+          </tr>
+          <tr ng-repeat="product in products track by $index">
+            <td>{{ product.name }}</td>
+            <td>{{ product.price  }}</td>
+            <td><input type='submit' value='delete product' ng-click='deleteProducts($index)' ></td>
+          </tr>
+        </table>
+    </div>
+</body>
+</html>

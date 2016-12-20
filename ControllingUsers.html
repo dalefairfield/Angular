@@ -1,0 +1,51 @@
+<html>
+<head>
+  <title></title>
+  <script src='bower_components/angular/angular.js'></script>
+  <script type='text/javascript'>
+    var myApp = angular.module('myApp', []);
+    myApp.controller('usersController', ['$scope', function ($scope){
+      // we don't need a factory for this demo, it wouldn't make a difference if we did.
+        this.users = [];
+
+    this.addUser = function (){
+      // add to the array
+      this.users.push(this.newUser);
+      // clear the form values
+      console.log("dale")
+      this.newUser = {};
+  }
+  this.printIndex = function (val){
+    // add to the array
+    this.users.pop(this.removeuser);
+    // clear the form values
+    this.removeuser = val;
+}
+}]);
+  </script>
+</head>
+<body ng-app='myApp'>
+    <div ng-controller='usersController as userCtrl'>
+    <form>
+      First Name: <input type='text' ng-model='userCtrl.newUser.firstname'>
+      Last Name: <input type='text' ng-model='userCtrl.newUser.lastname'>
+      Favorite Language: <input type='text' ng-model='userCtrl.newUser.language'>
+      <input type='submit' value='create user' ng-click='userCtrl.addUser()' >
+    </form>
+        <table>
+          <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Favorite Language</th>
+            <th>Actions</th>
+          </tr>
+          <tr ng-repeat="user in userCtrl.users track by $index">
+            <td>{{ user.firstname }}</td>
+            <td>{{ user.lastname  }}</td>
+            <td>{{ user.language }}</td>
+            <td><input type='submit' value='delete user' ng-click='userCtrl.printIndex($index)' ></td>
+          </tr>
+        </table>
+    </div>
+</body>
+</html>

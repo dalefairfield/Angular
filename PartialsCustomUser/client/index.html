@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html ng-app='myApp'>
+  <head>
+    <title></title>
+ <!-- THESE TWO VERSIONS BELOW MUST MATCH (good thing bower will catch that for us, but be aware if you are using CDN's)!!! -->
+    <script src="angular/angular.js"></script>
+    <script src="angular-route/angular-route.js"></script>
+<script>
+    //  inject the ngRoute dependency in the module.
+    var myApp = angular.module('myApp', ['ngRoute']);
+    //  use the config method to set up routing:
+    myApp.config(function ($routeProvider) {
+      $routeProvider
+        .when('/users',{
+            templateUrl: 'partials/view1.html',
+        })
+        .when('/list',{
+            templateUrl: 'partials/view2.html'
+        })
+        .otherwise({
+          redirectTo: '/'
+        });
+    });
+    // build factiories
+        myApp.factory('userFactory', function (){
+            var users = [];
+            var factory = {};
+            factory.getUsers = function (callback){
+                callback(users);
+            }
+            factory.create=function(data,callback){
+              users.push(data);
+              console.log(data)
+              callback(users);
+            }
+            factory.delete=function(index,callback){
+              users.splice(index,1);
+              callback(users);
+            }
+            return factory;
+          });
+
+    //  build the controllers
+  
+
+      myApp.controller('usersController1', ['$scope', 'userFactory', function ($scope, userFactory){
+        userFactory.getUsers(function(data){
+          $scope.users =data;
+          })
+          $scope.addUsers = function (){
+
+            userFactory.create($scope.user, function(data){
+              $scope.user = {};
+          })
+          $scope.deleteUsers = function (index){
+            userFactory.delete(index, function(data){
+            });
+          }
+        }
+      }]);
+      myApp.controller('usersController2', ['$scope', 'userFactory', function ($scope, userFactory){
+      userFactory.getUsers(function(data){
+        $scope.users =data;
+      })
+    }]);
+    </script>
+  </head>
+  <body>
+    <div ng-app='myApp'>
+        <a href="#!/users">Customize Users </a> | <a href="#!/list">User List</a>
+        <div ng-view="">
+        </div>
+    </div>
+  </body>
+</html>
